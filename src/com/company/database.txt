@@ -1,0 +1,468 @@
+Enter ".help" for usage hints.
+Connected to a transient in-memory database.
+Use ".open FILENAME" to reopen on a persistent database.
+sqlite> .open northwind.db
+sqlite> .tables
+categories              employees               shippers
+customer_customer_demo  order_details           suppliers
+customer_demographics   orders                  territories
+customers               products                us_states
+employee_territories    region
+sqlite> .mode box
+sqlite> select * from region;
+┌───────────┬────────────────────┐
+│ region_id │ region_description │
+├───────────┼────────────────────┤
+│ 1         │ Eastern            │
+│ 2         │ Western            │
+│ 3         │ Northern           │
+│ 4         │ Southern           │
+└───────────┴────────────────────┘
+sqlite> select count(*) product;
+┌─────────┐
+│ product │
+├─────────┤
+│ 1       │
+└─────────┘
+sqlite> select count(*) from product;
+Parse error: no such table: product
+sqlite> select count(*) from products;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 77       │
+└──────────┘
+sqlite> select product_name, quantity_per_unit from products limit 10;
+┌─────────────────────────────────┬─────────────────────┐
+│          product_name           │  quantity_per_unit  │
+├─────────────────────────────────┼─────────────────────┤
+│ Chai                            │ 10 boxes x 30 bags  │
+│ Chang                           │ 24 - 12 oz bottles  │
+│ Aniseed Syrup                   │ 12 - 550 ml bottles │
+│ Chef Anton's Cajun Seasoning    │ 48 - 6 oz jars      │
+│ Chef Anton's Gumbo Mix          │ 36 boxes            │
+│ Grandma's Boysenberry Spread    │ 12 - 8 oz jars      │
+│ Uncle Bob's Organic Dried Pears │ 12 - 1 lb pkgs.     │
+│ Northwoods Cranberry Sauce      │ 12 - 12 oz jars     │
+│ Mishi Kobe Niku                 │ 18 - 500 g pkgs.    │
+│ Ikura                           │ 12 - 200 ml jars    │
+└─────────────────────────────────┴─────────────────────┘
+sqlite> .schema products
+CREATE TABLE products (
+    product_id smallint NOT NULL PRIMARY KEY,
+    product_name character varying(40) NOT NULL,
+    supplier_id smallint,
+    category_id smallint,
+    quantity_per_unit character varying(20),
+    unit_price real,
+    units_in_stock smallint,
+    units_on_order smallint,
+    reorder_level smallint,
+    discontinued integer NOT NULL,
+FOREIGN KEY (category_id) REFERENCES categories,
+FOREIGN KEY (supplier_id) REFERENCES suppliers
+);
+sqlite> select product_id, product_name from products
+   ...> where discontinued = false;
+┌────────────┬──────────────────────────────────┐
+│ product_id │           product_name           │
+├────────────┼──────────────────────────────────┤
+│ 3          │ Aniseed Syrup                    │
+│ 4          │ Chef Anton's Cajun Seasoning     │
+│ 6          │ Grandma's Boysenberry Spread     │
+│ 7          │ Uncle Bob's Organic Dried Pears  │
+│ 8          │ Northwoods Cranberry Sauce       │
+│ 10         │ Ikura                            │
+│ 11         │ Queso Cabrales                   │
+│ 12         │ Queso Manchego La Pastora        │
+│ 13         │ Konbu                            │
+│ 14         │ Tofu                             │
+│ 15         │ Genen Shouyu                     │
+│ 16         │ Pavlova                          │
+│ 18         │ Carnarvon Tigers                 │
+│ 19         │ Teatime Chocolate Biscuits       │
+│ 20         │ Sir Rodney's Marmalade           │
+│ 21         │ Sir Rodney's Scones              │
+│ 22         │ Gustaf's Knackebrod              │
+│ 23         │ Tunnbrod                         │
+│ 25         │ NuNuCa Nu?-Nougat-Creme          │
+│ 26         │ Gumbar Gummibarchen              │
+│ 27         │ Schoggi Schokolade               │
+│ 30         │ Nord-Ost Matjeshering            │
+│ 31         │ Gorgonzola Telino                │
+│ 32         │ Mascarpone Fabioli               │
+│ 33         │ Geitost                          │
+│ 34         │ Sasquatch Ale                    │
+│ 35         │ Steeleye Stout                   │
+│ 36         │ Inlagd Sill                      │
+│ 37         │ Gravad lax                       │
+│ 38         │ Cote de Blaye                    │
+│ 39         │ Chartreuse verte                 │
+│ 40         │ Boston Crab Meat                 │
+│ 41         │ Jack's New England Clam Chowder  │
+│ 43         │ Ipoh Coffee                      │
+│ 44         │ Gula Malacca                     │
+│ 45         │ Rogede sild                      │
+│ 46         │ Spegesild                        │
+│ 47         │ Zaanse koeken                    │
+│ 48         │ Chocolade                        │
+│ 49         │ Maxilaku                         │
+│ 50         │ Valkoinen suklaa                 │
+│ 51         │ Manjimup Dried Apples            │
+│ 52         │ Filo Mix                         │
+│ 54         │ Tourtiere                        │
+│ 55         │ Pate chinois                     │
+│ 56         │ Gnocchi di nonna Alice           │
+│ 57         │ Ravioli Angelo                   │
+│ 58         │ Escargots de Bourgogne           │
+│ 59         │ Raclette Courdavault             │
+│ 60         │ Camembert Pierrot                │
+│ 61         │ Sirop d'erable                   │
+│ 62         │ Tarte au sucre                   │
+│ 63         │ Vegie-spread                     │
+│ 64         │ Wimmers gute Semmelknodel        │
+│ 65         │ Louisiana Fiery Hot Pepper Sauce │
+│ 66         │ Louisiana Hot Spiced Okra        │
+│ 67         │ Laughing Lumberjack Lager        │
+│ 68         │ Scottish Longbreads              │
+│ 69         │ Gudbrandsdalsost                 │
+│ 70         │ Outback Lager                    │
+│ 71         │ Flotemysost                      │
+│ 72         │ Mozzarella di Giovanni           │
+│ 73         │ Rod Kaviar                       │
+│ 74         │ Longlife Tofu                    │
+│ 75         │ Rhonbrau Klosterbier             │
+│ 76         │ Lakkalikoori                     │
+│ 77         │ Original Frankfurter grune So?e  │
+└────────────┴──────────────────────────────────┘
+sqlite> where discontinued = falseorder by product_name limit 10;
+Parse error: near "where": syntax error
+  where discontinued = falseorder by product_name limit 10;
+  ^--- error here
+sqlite> select product_id, product_name from products
+   ...>  where discontinued = false false order by product_name limit 10;
+Parse error: near "false": syntax error
+  ct_name from products  where discontinued = false false order by product_name
+                                      error here ---^
+sqlite> select product_id, product_name from products
+   ...>   where discontinued = false order by product_name limit 10;
+┌────────────┬──────────────────────────────┐
+│ product_id │         product_name         │
+├────────────┼──────────────────────────────┤
+│ 3          │ Aniseed Syrup                │
+│ 40         │ Boston Crab Meat             │
+│ 60         │ Camembert Pierrot            │
+│ 18         │ Carnarvon Tigers             │
+│ 39         │ Chartreuse verte             │
+│ 4          │ Chef Anton's Cajun Seasoning │
+│ 48         │ Chocolade                    │
+│ 38         │ Cote de Blaye                │
+│ 58         │ Escargots de Bourgogne       │
+│ 52         │ Filo Mix                     │
+└────────────┴──────────────────────────────┘
+sqlite> select count(*) from products;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 77       │
+└──────────┘
+sqlite> select count(*) from products where discontinued = false;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 67       │
+└──────────┘
+sqlite> select count(*) from products where discontinued = true;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 10       │
+└──────────┘
+sqlite> select count(*) from products where discontinued = false
+   ...> union
+   ...> select count(*) from products where discontinued = true;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 10       │
+│ 67       │
+└──────────┘
+sqlite> select count(*) from products where discontinued = false
+   ...> union all
+   ...> select count(*) from products where discontinued = true;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 67       │
+│ 10       │
+└──────────┘
+sqlite> select count(*) from products group by discontinued;
+┌──────────┐
+│ count(*) │
+├──────────┤
+│ 67       │
+│ 10       │
+└──────────┘
+sqlite> select product_name, unit_price from products
+   ...> select product_name, unit_price from products
+   ...> ;
+Parse error: near "select": syntax error
+  select product_name, unit_price from products select product_name, unit_price
+                                  error here ---^
+sqlite> select product_name, max(unit_price) from products;
+┌───────────────┬─────────────────┐
+│ product_name  │ max(unit_price) │
+├───────────────┼─────────────────┤
+│ Cote de Blaye │ 263.5           │
+└───────────────┴─────────────────┘
+sqlite> select product_name, min(unit_price) from products;
+┌──────────────┬─────────────────┐
+│ product_name │ min(unit_price) │
+├──────────────┼─────────────────┤
+│ Geitost      │ 2.5             │
+└──────────────┴─────────────────┘
+sqlite> select product_name, unit_price from products
+   ...> order by unit_price limit 1;
+┌──────────────┬────────────┐
+│ product_name │ unit_price │
+├──────────────┼────────────┤
+│ Geitost      │ 2.5        │
+└──────────────┴────────────┘
+sqlite> select product_name, unit_price from products
+   ...> order by unit_price desc limit 1;
+┌───────────────┬────────────┐
+│ product_name  │ unit_price │
+├───────────────┼────────────┤
+│ Cote de Blaye │ 263.5      │
+└───────────────┴────────────┘
+sqlite> select product_name, unit_price from products where discontinued = false
+   ...> and unit_price>=15 and unit_price<=25;
+┌──────────────────────────────────┬────────────┐
+│           product_name           │ unit_price │
+├──────────────────────────────────┼────────────┤
+│ Chef Anton's Cajun Seasoning     │ 22.0       │
+│ Grandma's Boysenberry Spread     │ 25.0       │
+│ Queso Cabrales                   │ 21.0       │
+│ Tofu                             │ 23.25      │
+│ Pavlova                          │ 17.4500008 │
+│ Gustaf's Knackebrod              │ 21.0       │
+│ Steeleye Stout                   │ 18.0       │
+│ Inlagd Sill                      │ 19.0       │
+│ Chartreuse verte                 │ 18.0       │
+│ Boston Crab Meat                 │ 18.3999996 │
+│ Gula Malacca                     │ 19.4500008 │
+│ Maxilaku                         │ 20.0       │
+│ Valkoinen suklaa                 │ 16.25      │
+│ Pate chinois                     │ 24.0       │
+│ Ravioli Angelo                   │ 19.5       │
+│ Louisiana Fiery Hot Pepper Sauce │ 21.0499992 │
+│ Louisiana Hot Spiced Okra        │ 17.0       │
+│ Outback Lager                    │ 15.0       │
+│ Flotemysost                      │ 21.5       │
+│ Rod Kaviar                       │ 15.0       │
+│ Lakkalikoori                     │ 18.0       │
+└──────────────────────────────────┴────────────┘
+sqlite> select product_name, unit_price from products where discontinued = false
+   ...>  and unit_price>=avg(unit_price);
+Parse error: misuse of aggregate function avg()
+  ducts where discontinued = false  and unit_price>=avg(unit_price);
+                                      error here ---^
+sqlite> select avg(unit_price) from products;
+┌──────────────────┐
+│ avg(unit_price)  │
+├──────────────────┤
+│ 28.8338960914286 │
+└──────────────────┘
+sqlite> select product_name, unit_price from products where discontinued = false
+   ...>    ...>  and unit_price>=(select avg(unit_price) from products);
+Parse error: near ".": syntax error
+  rice from products where discontinued = false    ...>  and unit_price>=(select
+                                      error here ---^
+sqlite> select product_name, unit_price from products where discontinued = false
+   ...>  and unit_price>=(select avg(unit_price) from products);
+┌─────────────────────────────────┬────────────┐
+│          product_name           │ unit_price │
+├─────────────────────────────────┼────────────┤
+│ Uncle Bob's Organic Dried Pears │ 30.0       │
+│ Northwoods Cranberry Sauce      │ 40.0       │
+│ Ikura                           │ 31.0       │
+│ Queso Manchego La Pastora       │ 38.0       │
+│ Carnarvon Tigers                │ 62.5       │
+│ Sir Rodney's Marmalade          │ 81.0       │
+│ Gumbar Gummibarchen             │ 31.2299995 │
+│ Schoggi Schokolade              │ 43.9000015 │
+│ Mascarpone Fabioli              │ 32.0       │
+│ Cote de Blaye                   │ 263.5      │
+│ Ipoh Coffee                     │ 46.0       │
+│ Manjimup Dried Apples           │ 53.0       │
+│ Gnocchi di nonna Alice          │ 38.0       │
+│ Raclette Courdavault            │ 55.0       │
+│ Camembert Pierrot               │ 34.0       │
+│ Tarte au sucre                  │ 49.2999992 │
+│ Vegie-spread                    │ 43.9000015 │
+│ Wimmers gute Semmelknodel       │ 33.25      │
+│ Gudbrandsdalsost                │ 36.0       │
+│ Mozzarella di Giovanni          │ 34.7999992 │
+└─────────────────────────────────┴────────────┘
+sqlite> select product_name, unit_price from products
+   ...> order by unit_price deac limit 10;
+Parse error: near "deac": syntax error
+  ame, unit_price from products order by unit_price deac limit 10;
+                                      error here ---^
+sqlite> select product_name, category_name, company_name, contact_name from products_name inner join
+   ...> ;_
+   ...> ;
+Parse error: near ";": syntax error
+  _name, contact_name from products_name inner join ;_ ;
+                                      error here ---^
+sqlite> select product_name, category_name, company_name, contact_name from products inner join
+   ...> categories on products.category_id=categories.category_id
+   ...> inner join suppliers
+   ...> on products.supplier_id=suppliers.supplier_id;
+┌──────────────────────────────────┬────────────────┬────────────────────────────────────────┬────────────────────────────┐
+│           product_name           │ category_name  │              company_name              │        contact_name        │
+├──────────────────────────────────┼────────────────┼────────────────────────────────────────┼────────────────────────────┤
+│ Chai                             │ Beverages      │ Specialty Biscuits, Ltd.               │ Peter Wilson               │
+│ Chang                            │ Beverages      │ Exotic Liquids                         │ Charlotte Cooper           │
+│ Aniseed Syrup                    │ Condiments     │ Exotic Liquids                         │ Charlotte Cooper           │
+│ Chef Anton's Cajun Seasoning     │ Condiments     │ New Orleans Cajun Delights             │ Shelley Burke              │
+│ Chef Anton's Gumbo Mix           │ Condiments     │ New Orleans Cajun Delights             │ Shelley Burke              │
+│ Grandma's Boysenberry Spread     │ Condiments     │ Grandma Kelly's Homestead              │ Regina Murphy              │
+│ Uncle Bob's Organic Dried Pears  │ Produce        │ Grandma Kelly's Homestead              │ Regina Murphy              │
+│ Northwoods Cranberry Sauce       │ Condiments     │ Grandma Kelly's Homestead              │ Regina Murphy              │
+│ Mishi Kobe Niku                  │ Meat/Poultry   │ Tokyo Traders                          │ Yoshi Nagase               │
+│ Ikura                            │ Seafood        │ Tokyo Traders                          │ Yoshi Nagase               │
+│ Queso Cabrales                   │ Dairy Products │ Cooperativa de Quesos 'Las Cabras'     │ Antonio del Valle Saavedra │
+│ Queso Manchego La Pastora        │ Dairy Products │ Cooperativa de Quesos 'Las Cabras'     │ Antonio del Valle Saavedra │
+│ Konbu                            │ Seafood        │ Mayumi's                               │ Mayumi Ohno                │
+│ Tofu                             │ Produce        │ Mayumi's                               │ Mayumi Ohno                │
+│ Genen Shouyu                     │ Condiments     │ Mayumi's                               │ Mayumi Ohno                │
+│ Pavlova                          │ Confections    │ Pavlova, Ltd.                          │ Ian Devling                │
+│ Alice Mutton                     │ Meat/Poultry   │ Pavlova, Ltd.                          │ Ian Devling                │
+│ Carnarvon Tigers                 │ Seafood        │ Pavlova, Ltd.                          │ Ian Devling                │
+│ Teatime Chocolate Biscuits       │ Confections    │ Specialty Biscuits, Ltd.               │ Peter Wilson               │
+│ Sir Rodney's Marmalade           │ Confections    │ Specialty Biscuits, Ltd.               │ Peter Wilson               │
+│ Sir Rodney's Scones              │ Confections    │ Specialty Biscuits, Ltd.               │ Peter Wilson               │
+│ Gustaf's Knackebrod              │ Grains/Cereals │ PB Knackebrod AB                       │ Lars Peterson              │
+│ Tunnbrod                         │ Grains/Cereals │ PB Knackebrod AB                       │ Lars Peterson              │
+│ Guarana Fantastica               │ Beverages      │ Refrescos Americanas LTDA              │ Carlos Diaz                │
+│ NuNuCa Nu?-Nougat-Creme          │ Confections    │ Heli Su?waren GmbH & Co. KG            │ Petra Winkler              │
+│ Gumbar Gummibarchen              │ Confections    │ Heli Su?waren GmbH & Co. KG            │ Petra Winkler              │
+│ Schoggi Schokolade               │ Confections    │ Heli Su?waren GmbH & Co. KG            │ Petra Winkler              │
+│ Rossle Sauerkraut                │ Produce        │ Plutzer Lebensmittelgro?markte AG      │ Martin Bein                │
+│ Thuringer Rostbratwurst          │ Meat/Poultry   │ Plutzer Lebensmittelgro?markte AG      │ Martin Bein                │
+│ Nord-Ost Matjeshering            │ Seafood        │ Nord-Ost-Fisch Handelsgesellschaft mbH │ Sven Petersen              │
+│ Gorgonzola Telino                │ Dairy Products │ Formaggi Fortini s.r.l.                │ Elio Rossi                 │
+│ Mascarpone Fabioli               │ Dairy Products │ Formaggi Fortini s.r.l.                │ Elio Rossi                 │
+│ Geitost                          │ Dairy Products │ Norske Meierier                        │ Beate Vileid               │
+│ Sasquatch Ale                    │ Beverages      │ Bigfoot Breweries                      │ Cheryl Saylor              │
+│ Steeleye Stout                   │ Beverages      │ Bigfoot Breweries                      │ Cheryl Saylor              │
+│ Inlagd Sill                      │ Seafood        │ Svensk Sjofoda AB                      │ Michael Bjorn              │
+│ Gravad lax                       │ Seafood        │ Svensk Sjofoda AB                      │ Michael Bjorn              │
+│ Cote de Blaye                    │ Beverages      │ Aux joyeux ecclesiastiques             │ Guylene Nodier             │
+│ Chartreuse verte                 │ Beverages      │ Aux joyeux ecclesiastiques             │ Guylene Nodier             │
+│ Boston Crab Meat                 │ Seafood        │ New England Seafood Cannery            │ Robb Merchant              │
+│ Jack's New England Clam Chowder  │ Seafood        │ New England Seafood Cannery            │ Robb Merchant              │
+│ Singaporean Hokkien Fried Mee    │ Grains/Cereals │ Leka Trading                           │ Chandra Leka               │
+│ Ipoh Coffee                      │ Beverages      │ Leka Trading                           │ Chandra Leka               │
+│ Gula Malacca                     │ Condiments     │ Leka Trading                           │ Chandra Leka               │
+│ Rogede sild                      │ Seafood        │ Lyngbysild                             │ Niels Petersen             │
+│ Spegesild                        │ Seafood        │ Lyngbysild                             │ Niels Petersen             │
+│ Zaanse koeken                    │ Confections    │ Zaanse Snoepfabriek                    │ Dirk Luchte                │
+│ Chocolade                        │ Confections    │ Zaanse Snoepfabriek                    │ Dirk Luchte                │
+│ Maxilaku                         │ Confections    │ Karkki Oy                              │ Anne Heikkonen             │
+│ Valkoinen suklaa                 │ Confections    │ Karkki Oy                              │ Anne Heikkonen             │
+│ Manjimup Dried Apples            │ Produce        │ G'day, Mate                            │ Wendy Mackenzie            │
+│ Filo Mix                         │ Grains/Cereals │ G'day, Mate                            │ Wendy Mackenzie            │
+│ Perth Pasties                    │ Meat/Poultry   │ G'day, Mate                            │ Wendy Mackenzie            │
+│ Tourtiere                        │ Meat/Poultry   │ Ma Maison                              │ Jean-Guy Lauzon            │
+│ Pate chinois                     │ Meat/Poultry   │ Ma Maison                              │ Jean-Guy Lauzon            │
+│ Gnocchi di nonna Alice           │ Grains/Cereals │ Pasta Buttini s.r.l.                   │ Giovanni Giudici           │
+│ Ravioli Angelo                   │ Grains/Cereals │ Pasta Buttini s.r.l.                   │ Giovanni Giudici           │
+│ Escargots de Bourgogne           │ Seafood        │ Escargots Nouveaux                     │ Marie Delamare             │
+│ Raclette Courdavault             │ Dairy Products │ Gai paturage                           │ Eliane Noz                 │
+│ Camembert Pierrot                │ Dairy Products │ Gai paturage                           │ Eliane Noz                 │
+│ Sirop d'erable                   │ Condiments     │ Forets d'erables                       │ Chantal Goulet             │
+│ Tarte au sucre                   │ Confections    │ Forets d'erables                       │ Chantal Goulet             │
+│ Vegie-spread                     │ Condiments     │ Pavlova, Ltd.                          │ Ian Devling                │
+│ Wimmers gute Semmelknodel        │ Grains/Cereals │ Plutzer Lebensmittelgro?markte AG      │ Martin Bein                │
+│ Louisiana Fiery Hot Pepper Sauce │ Condiments     │ New Orleans Cajun Delights             │ Shelley Burke              │
+│ Louisiana Hot Spiced Okra        │ Condiments     │ New Orleans Cajun Delights             │ Shelley Burke              │
+│ Laughing Lumberjack Lager        │ Beverages      │ Bigfoot Breweries                      │ Cheryl Saylor              │
+│ Scottish Longbreads              │ Confections    │ Specialty Biscuits, Ltd.               │ Peter Wilson               │
+│ Gudbrandsdalsost                 │ Dairy Products │ Norske Meierier                        │ Beate Vileid               │
+│ Outback Lager                    │ Beverages      │ Pavlova, Ltd.                          │ Ian Devling                │
+│ Flotemysost                      │ Dairy Products │ Norske Meierier                        │ Beate Vileid               │
+│ Mozzarella di Giovanni           │ Dairy Products │ Formaggi Fortini s.r.l.                │ Elio Rossi                 │
+│ Rod Kaviar                       │ Seafood        │ Svensk Sjofoda AB                      │ Michael Bjorn              │
+│ Longlife Tofu                    │ Produce        │ Tokyo Traders                          │ Yoshi Nagase               │
+│ Rhonbrau Klosterbier             │ Beverages      │ Plutzer Lebensmittelgro?markte AG      │ Martin Bein                │
+│ Lakkalikoori                     │ Beverages      │ Karkki Oy                              │ Anne Heikkonen             │
+│ Original Frankfurter grune So?e  │ Condiments     │ Plutzer Lebensmittelgro?markte AG      │ Martin Bein                │
+└──────────────────────────────────┴────────────────┴────────────────────────────────────────┴────────────────────────────┘
+sqlite> select llast_name, first_name from employees inner join employee_territories on employees.employee_id=
+   ...> employee_territories.employee_id;
+Parse error: no such column: llast_name
+  select llast_name, first_name from employees inner join employee_territories o
+         ^--- error here
+sqlite> select llast_name, first_name,territory_description from employees inner join employee_territories on employees.employee_id=employee_territories.
+   ...> employee_id inner join territories on territories.territory_id=employee_territories.territory_id;
+Parse error: no such column: llast_name
+  select llast_name, first_name,territory_description from employees inner join
+         ^--- error here
+sqlite> select last_name, first_name,territory_description from employees inner join employee_territories on employees.employee_id=employee_territories.
+   ...> employee_id inner join territories on territories.territory_id=employee_territories.territory_id;
+┌───────────┬────────────┬───────────────────────┐
+│ last_name │ first_name │ territory_description │
+├───────────┼────────────┼───────────────────────┤
+│ Davolio   │ Nancy      │ Wilton                │
+│ Davolio   │ Nancy      │ Neward                │
+│ Fuller    │ Andrew     │ Westboro              │
+│ Fuller    │ Andrew     │ Bedford               │
+│ Fuller    │ Andrew     │ Georgetow             │
+│ Fuller    │ Andrew     │ Boston                │
+│ Fuller    │ Andrew     │ Cambridge             │
+│ Fuller    │ Andrew     │ Braintree             │
+│ Fuller    │ Andrew     │ Louisville            │
+│ Leverling │ Janet      │ Atlanta               │
+│ Leverling │ Janet      │ Savannah              │
+│ Leverling │ Janet      │ Orlando               │
+│ Leverling │ Janet      │ Tampa                 │
+│ Peacock   │ Margaret   │ Rockville             │
+│ Peacock   │ Margaret   │ Greensboro            │
+│ Peacock   │ Margaret   │ Cary                  │
+│ Buchanan  │ Steven     │ Providence            │
+│ Buchanan  │ Steven     │ Morristown            │
+│ Buchanan  │ Steven     │ Edison                │
+│ Buchanan  │ Steven     │ New York              │
+│ Buchanan  │ Steven     │ New York              │
+│ Buchanan  │ Steven     │ Mellvile              │
+│ Buchanan  │ Steven     │ Fairport              │
+│ Suyama    │ Michael    │ Phoenix               │
+│ Suyama    │ Michael    │ Scottsdale            │
+│ Suyama    │ Michael    │ Bellevue              │
+│ Suyama    │ Michael    │ Redmond               │
+│ Suyama    │ Michael    │ Seattle               │
+│ King      │ Robert     │ Hoffman Estates       │
+│ King      │ Robert     │ Chicago               │
+│ King      │ Robert     │ Denver                │
+│ King      │ Robert     │ Colorado Springs      │
+│ King      │ Robert     │ Santa Monica          │
+│ King      │ Robert     │ Menlo Park            │
+│ King      │ Robert     │ San Francisco         │
+│ King      │ Robert     │ Campbell              │
+│ King      │ Robert     │ Santa Clara           │
+│ King      │ Robert     │ Santa Cruz            │
+│ Callahan  │ Laura      │ Philadelphia          │
+│ Callahan  │ Laura      │ Beachwood             │
+│ Callahan  │ Laura      │ Findlay               │
+│ Callahan  │ Laura      │ Racine                │
+│ Dodsworth │ Anne       │ Hollis                │
+│ Dodsworth │ Anne       │ Portsmouth            │
+│ Dodsworth │ Anne       │ Southfield            │
+│ Dodsworth │ Anne       │ Troy                  │
+│ Dodsworth │ Anne       │ Bloomfield Hills      │
+│ Dodsworth │ Anne       │ Roseville             │
+│ Dodsworth │ Anne       │ Minneapolis           │
+└───────────┴────────────┴───────────────────────┘
+sqlite>
